@@ -1,0 +1,11 @@
+
+model-> response
+berfungsi untuk menentukan type ketika response dari
+
+** jangan lupa untuk di cantumkan di index
+ex:
+
+export type CreateMailTemplateRequest = {
+    name: string
+    template: string
+}

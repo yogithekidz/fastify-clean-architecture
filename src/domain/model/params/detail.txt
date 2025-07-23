@@ -1,0 +1,9 @@
+model-> params
+berfungsi untuk menentukan type yang nantinya akan di gunakan pada controller
+
+** jangan lupa untuk di cantumkan di index
+ex:
+
+type userDetail {
+  id: string
+}

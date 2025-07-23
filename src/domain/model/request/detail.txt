@@ -1,0 +1,10 @@
+model-> request
+berfungsi untuk menentukan type pada request.body yang nantinya akan di gunakan pada controller
+
+** jangan lupa untuk di cantumkan di index
+ex:
+
+export type CreateMailTemplateRequest = {
+    name: string
+    template: string
+}
