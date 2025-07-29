@@ -6,18 +6,24 @@ import { logger } from "@utils/logger/pino";
 /**
  * MODULE AUGMENTATION TECHNIQUE...
  */
+/**
+ * Note
+ * di interface MysqlDataSource itu ada ds seperti setter dan GetDataSource itu getternya
+ * jangan terpaku sama interace nya karena dari segi penerapan pastinya berbeda bisa menyesuaikan
+ */
+
 declare module "@infrastructure/mysql/connection" {
     interface MysqlDataSource {
         ds?: DataSource;
-        GetMMBDataSource(): Promise<DataSource>;
+        GetDataSource(): Promise<DataSource>;
     }
 }
 
 type BootMySQLOptions = {
-    CheckMMBDatabase: boolean;
+    CheckDatabase: boolean;
 }
 
-MysqlDataSource.prototype.GetMMBDataSource = async function(): Promise<DataSource>{
+MysqlDataSource.prototype.GetDataSource = async function(): Promise<DataSource>{
     if(this.ds){
         return this.ds;
     }
@@ -45,11 +51,11 @@ MysqlDataSource.prototype.GetMMBDataSource = async function(): Promise<DataSourc
 }
 
 export default async function BootMySQL(options: BootMySQLOptions){
-    if(options.CheckMMBDatabase){
+    if(options.CheckDatabase){
         const dataSources = InfraMySQL.GetMySQLDataSource();
-        const mmb_db = await dataSources.GetMMBDataSource();
+        const db_database = await dataSources.GetDataSource();
         // test connection..
-        await mmb_db.query(`SELECT a.user_id FROM users a LIMIT 1`);
+        await db_database.query(`SELECT 1`);
     }
     logger.info({ event: `application/boot/mysql`, msg: "Done..." });
 }

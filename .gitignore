@@ -3,7 +3,7 @@ pm2.config.js
 dist/
 .env
 .vscode
-*.json
+# *.json
 test.ts
 package-lock.json
 tmp
