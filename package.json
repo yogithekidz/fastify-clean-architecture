@@ -28,7 +28,7 @@
     "fastify-plugin": "^4.5.0",
     "format-unicorn": "^1.1.1",
     "joi": "^17.9.2",
-    "mysql": "^2.18.1",
+    "mysql2": "^3.14.3",
     "pino": "^8.14.1",
     "typeorm": "^0.3.17",
     "uuid": "^9.0.0"

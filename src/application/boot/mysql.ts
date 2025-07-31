@@ -3,6 +3,8 @@ import { MysqlDataSource } from "@infrastructure/mysql/connection";
 import { DataSource } from "typeorm";
 import * as AppConfig from "@application/config/app.config"
 import { logger } from "@utils/logger/pino";
+// import { UserEntity } from '@adapters/outbound/entities/UserEntity';
+
 /**
  * MODULE AUGMENTATION TECHNIQUE...
  */
@@ -59,3 +61,21 @@ export default async function BootMySQL(options: BootMySQLOptions){
     }
     logger.info({ event: `application/boot/mysql`, msg: "Done..." });
 }
+
+// export const AppDataSource = new DataSource({
+//   type: 'mysql',
+//   host: process.env.MYSQL_HOST || 'localhost',
+//   port: parseInt(process.env.MYSQL_PORT || '3306'),
+//   username: process.env.MYSQL_USER || 'root',
+//   password: process.env.MYSQL_PASSWORD || '',
+//   database: process.env.MYSQL_DATABASE || 'fastify_login',
+//   entities: [UserEntity],
+//   synchronize: false,
+// });
+
+// export const createMysqlConnection = async () => {
+//   if (!AppDataSource.isInitialized) {
+//     await AppDataSource.initialize();
+//     console.log('✅ Database connected');
+//   }
+// };

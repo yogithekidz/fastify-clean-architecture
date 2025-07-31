@@ -4,11 +4,13 @@ config({
 })
 
 import FastifyBaseAddon from "@application/boot/fastify/base";
-import FastifyRouteAddon from "@application/boot/fastify/route";
+// import FastifyRouteAddon from "@application/boot/fastify/route";
 import FastifySwaggerAddon from "@application/boot/fastify/swagger";
 import BootMySQL from "@application/boot/mysql";
 import { AppConfig, InfraHttpFastify, InfraMysqlConnection } from "index";
 import { ajvFilePlugin } from '@application/boot/helper';
+import authRoutes from '@adapters/inbound/http/routes/auth';
+import { UserEntity } from '@adapters/outbound/entities/UserEntity';
 
 async function Start(){
     //set config section
@@ -19,11 +21,11 @@ async function Start(){
         httpPrefix: process.env.HTTP_PREFIX || '/api/v1',
         Database: process.env.MYSQL_DATABASE === 'true',
         DBhost: process.env.MYSQL_HOST || '127.0.0.1',
-        DBport: parseInt(process.env.MYSQL_PORT || '3307'),
+        DBport: parseInt(process.env.MYSQL_PORT || '3306'),
         DBpoolSize: parseInt(process.env.DB_POOL_SIZE || '5'),
-        DBdatabase: process.env.MYSQL_DATABASE || 'nestjs',
-        DBusername: process.env.MYSQL_USER || 'king',
-        DBpassword: process.env.MYSQL_PASSWORD || 'kong',
+        DBdatabase: process.env.MYSQL_DATABASE || 'fastify_login',
+        DBusername: process.env.MYSQL_USER || 'root',
+        DBpassword: process.env.MYSQL_PASSWORD || '',
       });
     //end of set config section
 
@@ -36,13 +38,14 @@ async function Start(){
      */
     await InfraMysqlConnection.CreateDataSource({
         host: AppConfig.GetConfig("DBhost") || "127.0.0.1",
-        port: AppConfig.GetConfig("DBport") || 3307,
-        username: AppConfig.GetConfig("DBusername") || "king",
-        password: AppConfig.GetConfig("DBpassword") || "kong",
-        database: AppConfig.GetConfig("DBdatabase") || "nestjs",
+        port: AppConfig.GetConfig("DBport") || 3306,
+        username: AppConfig.GetConfig("DBusername") || "root",
+        password: AppConfig.GetConfig("DBpassword") || "",
+        database: AppConfig.GetConfig("DBdatabase") || "fastify_login",
         type: "mysql",
         multipleStatements: false,
-        poolSize: AppConfig.GetConfig("DBpoolSize") || 5
+        poolSize: AppConfig.GetConfig("DBpoolSize") || 5,
+        entities: [UserEntity],
     });
 
     await BootMySQL({
@@ -55,8 +58,8 @@ async function Start(){
     await fastify
         .register(FastifyBaseAddon)
         .register(FastifySwaggerAddon)
-        .register(FastifyRouteAddon, {
-            // prefix: AppConfig.GetConfig("httpPrefix") || "/"
+        .register(authRoutes, {
+            prefix: AppConfig.GetConfig("httpPrefix") || "/api/v1"
         })
     await fastify.ready()
     await fastify.listen({
