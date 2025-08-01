@@ -37,15 +37,15 @@ async function Start(){
      * kalau true bakalan boleh lanjut
      */
     await InfraMysqlConnection.CreateDataSource({
-        host: AppConfig.GetConfig("DBhost") || "127.0.0.1",
-        port: AppConfig.GetConfig("DBport") || 3306,
-        username: AppConfig.GetConfig("DBusername") || "root",
-        password: AppConfig.GetConfig("DBpassword") || "",
-        database: AppConfig.GetConfig("DBdatabase") || "fastify_login",
+        host: AppConfig.GetConfig("DBhost"),
+        port: AppConfig.GetConfig("DBport"),
+        username: AppConfig.GetConfig("DBusername"),
+        password: AppConfig.GetConfig("DBpassword"),
+        database: AppConfig.GetConfig("DBdatabase"),
         type: "mysql",
         multipleStatements: false,
         poolSize: AppConfig.GetConfig("DBpoolSize") || 5,
-        entities: [UserEntity],
+        entities: [UserEntity],// kaga perlu ini
     });
 
     await BootMySQL({
@@ -59,14 +59,14 @@ async function Start(){
         .register(FastifyBaseAddon)
         .register(FastifySwaggerAddon)
         .register(authRoutes, {
-            prefix: AppConfig.GetConfig("httpPrefix") || "/api/v1"
+            // prefix: AppConfig.GetConfig("httpPrefix") || "/api/v1"
         })
     await fastify.ready()
     await fastify.listen({
         host: AppConfig.GetConfig("httpHost") || "localhost",
         port: AppConfig.GetConfig("httpPort") || 3000
     });
-    fastify.swagger();
+    fastify.swagger()
 }
 
 Start();

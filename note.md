@@ -5,3 +5,5 @@ boot -> isinya itu interface dan penerapan propertynya
 applicaiton -> ketika menggunakan AsyncLOck untuk lok initial one bye one
 
 npm install -g nodemon-> jangan lupa
+
+Revisi sama flownya cek
