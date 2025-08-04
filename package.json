@@ -16,6 +16,7 @@
     "@fastify/helmet": "^11.0.0",
     "@fastify/swagger": "^8.7.0",
     "@fastify/swagger-ui": "^1.9.2",
+    "@sinclair/typebox": "^0.34.38",
     "@types/async-lock": "^1.4.0",
     "@types/node": "^20.4.2",
     "@types/nodemailer": "^6.4.8",

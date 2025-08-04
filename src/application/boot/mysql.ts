@@ -3,7 +3,6 @@ import { MysqlDataSource } from "@infrastructure/mysql/connection";
 import { DataSource } from "typeorm";
 import * as AppConfig from "@application/config/app.config"
 import { logger } from "@utils/logger/pino";
-// import { UserEntity } from '@adapters/outbound/entities/UserEntity';
 
 /**
  * MODULE AUGMENTATION TECHNIQUE...

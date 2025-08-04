@@ -9,9 +9,13 @@
 // export async function hashPassword(password: string): Promise<string> {
 //   }
 
-import Joi from 'joi';
+import bcrypt from 'bcrypt';
 
-export const loginSchema = Joi.object({
-  username: Joi.string().min(3).max(10).required(),
-  password: Joi.string().min(4).max(8).required(),
-});
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
+}
+
+export async function comparePassword(inputPassword: string, hashedPassword: string): Promise<boolean> {
+  return await bcrypt.compare(inputPassword, hashedPassword);
+}
