@@ -1,13 +1,15 @@
-export interface UserRequestLoginDto {
+export type UserRequestLoginDto = {
     username: string;
     password: string;
 }
 
-export interface UserRequestRegisterDto {
+export type UserRequestRegisterDto = {
     username: string;
     password: string;
 }
 
-export interface UserRequestDeactivateDto {
+export type UserRequestChangePasswordDto = {
     username: string;
+    oldPassword: string;
+    newPassword: string;
 }

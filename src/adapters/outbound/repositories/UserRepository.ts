@@ -1,4 +1,4 @@
-import { GetMySQLDataSource, MysqlDataSource } from '@infrastructure/mysql/connection';
+import { GetMySQLDataSource } from '@infrastructure/mysql/connection';
 import { UserEntity } from '@adapters/outbound/entities/UserEntity';
 
 export const getUserByUsernameRepo = async (username: string) => {
@@ -18,8 +18,11 @@ export const createUserRepo = async (user: { username: string; password: string 
   return await repo.save(newUser);
 };
 
-export const deactivateUserRepo = async (username: string) => {
-  const dataSource = await MysqlDataSource.prototype.GetDataSource();
-  const repo = dataSource.getRepository(UserEntity);
-  await repo.update({username}, { is_active: false });
-};
+export const updateUserPassword = async (username: string, newPassword: string) => {
+  const dataSources = GetMySQLDataSource().getAll();
+  const repo = dataSources[0].getRepository(UserEntity);
+  const user = await repo.findOneBy({ username });
+  if (!user) return null;
+  user.password = newPassword;
+  return await repo.save(user);
+}

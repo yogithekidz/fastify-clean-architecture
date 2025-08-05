@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyPluginOptions, RouteOptions } from 'fastify';
 // import { loginHandler } from '@adapters/inbound/http/controller/auth/AuthController';
 import { AuthController } from "../controller/auth";
-import { Type } from '@sinclair/typebox';
 // const authRoutes: FastifyPluginAsync = async (fastify) => {
 //   fastify.post('/login', loginHandler);
 // };
@@ -40,16 +39,11 @@ const routes: RouteOptions[] = [
     url: "/api/v1/register",
     handler: AuthController.registerHandler
   },
-{
-  method: ["DELETE"],
-  url: "/api/v1/delete/users/:username",
-  schema: {
-    params: Type.Object({
-      username: Type.String(),
-    }),
+  {
+    method: ["POST"],
+    url: "/api/v1/change-password",
+    handler: AuthController.changePasswordHandler
   },
-  handler: AuthController.deactivateUserHandler,
-} as RouteOptions
 ];
 
 export default async function FastifyAuthPluginRoute(fastify: FastifyInstance, options: FastifyPluginOptions) {
