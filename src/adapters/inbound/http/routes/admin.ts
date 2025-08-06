@@ -25,10 +25,9 @@ import {
   */
 
 const routes:RouteOptions[]=[
-
 ]
 
-export default async function FastifyWhitelabelRoute(
+export default async function FastifyAdminRoute(
   fastify: FastifyInstance,
   options: FastifyPluginOptions
 ) {
