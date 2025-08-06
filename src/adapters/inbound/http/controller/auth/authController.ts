@@ -40,8 +40,8 @@ export async function registerHandler (req: FastifyRequest, reply: FastifyReply)
 export async function changePasswordHandler (req: FastifyRequest, reply: FastifyReply){
   const payload = req.body as UserRequestChangePasswordDto;
   try {
-    const result = await changePassword(payload);
-    return reply.code(200).send({ message: 'Password changed succesfully', data: result})
+    await changePassword(payload);
+    return reply.code(200).send({ message: 'Password changed succesfully'})
   } catch (err: any) {
     return reply.status(401).send({ message: err.message})
   }

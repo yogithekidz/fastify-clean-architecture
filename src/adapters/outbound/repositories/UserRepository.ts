@@ -1,7 +1,7 @@
 import { GetMySQLDataSource } from '@infrastructure/mysql/connection';
 import { UserEntity } from '@adapters/outbound/entities/UserEntity';
 
-export const getUserByUsernameRepo = async (username: string) => {
+export async function getUserByUsernameRepo (username: string) {
   const dataSources = GetMySQLDataSource().getAll();
   const repo = dataSources[0].getRepository(UserEntity);
   /**
@@ -11,18 +11,30 @@ export const getUserByUsernameRepo = async (username: string) => {
   return repo.findOneBy({ username });
 };
 
-export const createUserRepo = async (user: { username: string; password: string }) => {
+export async function createUserRepo (user: { username: string; password: string }){
   const dataSources = GetMySQLDataSource().getAll();
   const repo = dataSources[0].getRepository(UserEntity);
   const newUser = repo.create({ ...user, is_active: true });
   return await repo.save(newUser);
 };
-
-export const updateUserPassword = async (username: string, newPassword: string) => {
+export async function updateUserPassword(username: string, newPassword: string) {
   const dataSources = GetMySQLDataSource().getAll();
   const repo = dataSources[0].getRepository(UserEntity);
-  const user = await repo.findOneBy({ username });
+
+  // Pastikan user ada
+  const user = await repo.query(
+    'SELECT id FROM users WHERE username = ? LIMIT 1',
+    [username]
+  );
   if (!user) return null;
-  user.password = newPassword;
-  return await repo.save(user);
+
+  const userId = user[0].id;
+
+  // Update password via query
+  await repo.query(
+    'UPDATE users SET password = ? WHERE id = ?',
+    [newPassword, userId]
+  );
+
+  return { success: true };
 }
