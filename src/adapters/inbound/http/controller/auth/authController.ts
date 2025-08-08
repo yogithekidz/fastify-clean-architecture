@@ -1,7 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { loginUser, changePassword } from '@application/services/User/UserService';
+import { loginUser, changePassword, handleRefreshToken } from '@application/services/User/UserService';
 import { registerUser } from '@domain/services/Register/RegisterService';
 import { UserRequestLoginDto, UserRequestRegisterDto, UserRequestChangePasswordDto} from '@domain/model/request/UserRequestDto';
+// import { verifyRefreshToken, generateAccessToken, generateRefreshToken } from '@application/services/Token/TokenService';
+// import { getUserByUsernameRepo, updateUserRefreshToken } from '@adapters/outbound/repositories/UserRepository';
+// import { RefreshTokenPayload } from '@domain/model/request/tokenRequestDto';
+// import { RefreshTokenRoute } from '@adapters/inbound/http/routes/refreshTokenRoute';
 
  /**
   * penulisan functionya bisa langgsung aja
@@ -44,5 +48,20 @@ export async function changePasswordHandler (req: FastifyRequest, reply: Fastify
     return reply.code(200).send({ message: 'Password changed succesfully'})
   } catch (err: any) {
     return reply.status(401).send({ message: err.message})
+  }
+}
+
+export async function refreshTokenHandler(req: FastifyRequest, reply: FastifyReply){
+  const authHeader = req.headers.authorization;
+  const refreshToken = authHeader?.split(' ')[1];
+  
+  const { username, password } = req.body as { username: string; password: string };
+  if (!refreshToken) return reply.status(401).send({ message: 'Token missing' });
+
+  try {
+    const tokens = await handleRefreshToken({ username, password, refreshToken });
+    return reply.send(tokens);
+  } catch (err: any) {
+    return reply.status(403).send( {message: err.message});
   }
 }
