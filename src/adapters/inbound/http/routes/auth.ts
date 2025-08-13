@@ -1,5 +1,4 @@
 import { FastifyInstance, FastifyPluginOptions, RouteOptions } from 'fastify';
-// import { loginHandler } from '@adapters/inbound/http/controller/auth/AuthController';
 import { AuthController } from "../controller/auth";
 // const authRoutes: FastifyPluginAsync = async (fastify) => {
 //   fastify.post('/login', loginHandler);
@@ -44,6 +43,11 @@ const routes: RouteOptions[] = [
     url: "/api/v1/change-password",
     handler: AuthController.changePasswordHandler
   },
+  {
+    method: ["POST"],
+    url: "/api/v1/auth/refreshToken",
+    handler: AuthController.refreshTokenHandler,
+  }
 ];
 
 export default async function FastifyAuthPluginRoute(fastify: FastifyInstance, options: FastifyPluginOptions) {

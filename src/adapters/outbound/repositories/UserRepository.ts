@@ -17,6 +17,7 @@ export async function createUserRepo (user: { username: string; password: string
   const newUser = repo.create({ ...user, is_active: true });
   return await repo.save(newUser);
 };
+
 export async function updateUserPassword(username: string, newPassword: string) {
   const dataSources = GetMySQLDataSource().getAll();
   const repo = dataSources[0].getRepository(UserEntity);

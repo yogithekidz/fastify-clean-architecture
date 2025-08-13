@@ -2,9 +2,10 @@ import { comparePassword, hashPassword } from '@utils/password/password';
 import { getUserByUsername } from '@domain/services/User/UserService';
 import Joi from 'joi';
 import { UserRequestChangePasswordDto } from '@domain/model/request/UserRequestDto';
-import { updateUserPassword } from '@adapters/outbound/repositories/UserRepository';
+import { updateUserPassword} from '@adapters/outbound/repositories/UserRepository';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../Token/TokenService';
+import { RefreshTokenPayload, RefreshTokenRequestDto } from '@domain/model/request/tokenRequestDto';
 
-export async function loginUser (username: string, password: string) {
   /**
    * Disini baru pakai joi untuk validasi
    * ex:
@@ -20,6 +21,8 @@ export async function loginUser (username: string, password: string) {
     * Compare password buatkan di utils jagann langsung di terapkan di sini
     *
    */
+
+export async function loginUser (username: string, password: string) {
   const schema = Joi.object({
     username: Joi.string().required(),
     password: Joi.string().required(),
@@ -30,8 +33,16 @@ export async function loginUser (username: string, password: string) {
   if (!user) throw new Error('Invalid credentials or inactive account');
   const isValid = await comparePassword(password, user.password);
   if (!isValid) throw new Error('Invalid credentials');
+  const payload: RefreshTokenPayload = {
+    id: user?.id, 
+    username: user?.username,
+  };
 
-  return { message: 'Login success', userId: user.id };
+  const accessToken = generateAccessToken(payload);
+  const refreshToken = generateRefreshToken(payload);
+
+  
+  return { message: 'Login success', userId: user.id, accessToken, refreshToken };
 };
 
 export async function changePassword(payload: UserRequestChangePasswordDto) {
@@ -52,5 +63,33 @@ export async function changePassword(payload: UserRequestChangePasswordDto) {
   await updateUserPassword(payload.username, hashedNewPassword)
 
   return { message: 'Password changed successfully' };  
+}
+
+export async function handleRefreshToken(input: RefreshTokenRequestDto) {
+  const { username, password, refreshToken } = input;
+
+  const schema = Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+    refreshToken: Joi.string().required(),
+  });
+
+  await schema.validateAsync({ username, password, refreshToken });
+
+  const user = await getUserByUsername(username);
+  if (!user) throw new Error('Invalid credentials or inactive account');
+  const isValid = await comparePassword(password, user.password);
+  if (!isValid) throw new Error('Invalid credentials');
+
+  const decoded = verifyRefreshToken(refreshToken);
+  if (decoded.username !== username) throw new Error('Token mismatch');
+
+  const newAccessToken = generateAccessToken({ id: user.id, username: user.username });
+  const newRefreshToken = generateRefreshToken({ id: user.id, username: user.username });
+
+  return {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
 }
 
