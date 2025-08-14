@@ -9,3 +9,4 @@ package-lock.json
 tmp
 uploads
 private.pem
+db/

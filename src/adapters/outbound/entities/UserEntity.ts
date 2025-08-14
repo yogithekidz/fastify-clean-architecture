@@ -13,9 +13,6 @@ export class UserEntity {
 
   @Column({ default: true })
   is_active!: boolean;
-
-  @Column({ name: 'refresh_token', nullable: true })
-  refreshToken!: string;
 }
 
 

@@ -29,6 +29,10 @@ export class MysqlDataSource {
   getAll(): DataSource[] {
     return this.dataSources;
   }
+
+  async getFaDataSource(): Promise<DataSource> {
+    return this.dataSources[0];
+  }
 }
 
 // Singleton: hanya satu instance MysqlDataSource
@@ -46,6 +50,7 @@ const mysqlDataSource = new MysqlDataSource();
  function GetMySQLDataSource(): MysqlDataSource {
   return mysqlDataSource;
 }
+
 
 // Opsional: juga bisa export class (kalau nanti mau buat instance lain)
 export { GetMySQLDataSource, CreateDataSource, AddDataSource }
